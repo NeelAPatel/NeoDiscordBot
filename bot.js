@@ -1,4 +1,7 @@
-
+/* 
+commands for bash: 
+$ sudo apt install nodejs-legacy
+*/
 //Set up discord api
 var Discord = require('discord.io');
 var logger = require('winston');
@@ -19,16 +22,80 @@ var count = 0;
 //Retrieve ImageLinks
 //https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
 //https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/entities-object1
-Twitter.get('statuses/user_timeline', { screen_name: 'notrinap', count: 25 }, function (err, data, response) {
-    //console.log(data)
-    for (var a in data)
-    {
-        count = count + 1;
-        console.log(count);
-    }
+
+/*
+Twitter.get('statuses/user_timeline', { screen_name: 'neelerita', count: 2 }, function (err, data, response) {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+    //console.log(data);
     
-  })
+    var array = data;
+
+    //For EVERY TWEET in the array of tweets
+    for(var index in array) {
+        console.log('.................. TWEET START ................');
+        var tweet = array[index];
+        
+        //For EVERY FIELDNAME in a tweet
+        for(var fieldName in tweet) {
+            var fieldValue = tweet[fieldName];
+            //console.log(fieldName); //item name
+            console.log(fieldName.retwe)
+            //If the field name is entities
+            if (fieldName == 'entities'){
+                console.log("[FieldName]: " + fieldName);
+                console.log(fieldValue); //item stuff
+                for (var subField in fieldValue)
+                {
+                    console.log("[Field Value of " + fieldName + "]: " + subField);
+                    if (subField == 'media')
+                    {                   
+                        console.log("YES SUBFIELD IS MEDIA\n");
+                        console.log(fieldName + "\n"); // entities
+                        console.log(fieldValue[0]);
+                        console.log(subField[0]); 
+                        
+                    }
+                }
+            }
+        }
+        console.log('.................. TWEET END ................');
+    }
   
+    
+ })
+  
+*/
+
+//const Clarifai = require('clarifai');
+//const dlImg = require('image-downloader');
+//const path = require('path');
+
+const stream = Twitter.stream('statuses/filter', { track: "notrinap" });
+stream.on('error', err => console.log(err));
+
+stream.on('tweet', tweet => {
+  if (tweet.retweeted || !tweet.entities.media || !tweet.entities.media[0]) return; // no image in tweet
+
+  console.log(tweet.entities.media[0].media_url_https);
+
+  /*
+  predict(tweet.entities.media[0].media_url_https, (err, res) => {
+    if (err) console.log(err);
+    const newDir = dir + '/' + res[0].name;
+    if (ls(dir).indexOf(res[0].name) === -1) mkdir(newDir);
+
+    dlImg({
+    url: tweet.entities.media[0].media_url_https,
+      dest: path.join(__dirname, newDir) + '/' + res[0].name + '-' + tweet.user.screen_name + '.jpg',
+      done: (err, filename, image) => {
+        if (err) console.log(err);
+        console.log('Image at: ' + filename);
+      }
+    });
+  });*/
+});
+
+/*
 // Initialize Discord Bot
 var bot = new Discord.Client({
    token: auth.token,
@@ -56,7 +123,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 });
             break;
             }
-
+            //!notrinagasm
             case 'notrinagasm':{
                 bot.sendMessage({
                     to: channelID,
@@ -68,4 +135,4 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
          }
      }
-});
+});*/
