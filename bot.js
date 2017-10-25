@@ -19,6 +19,29 @@ logger.add(logger.transports.Console, {
 logger.level = 'debug';
 
 var count = 0;
+
+
+
+var fs = require("fs"),
+    path = require("path");
+
+//var p = "../" // current directory
+var p = "/mnt/c/Users/NeelP/Pictures/Screenshots"
+fs.readdir(p, function (err, files) {
+    if (err) {
+        throw err;
+    }
+
+    files.map(function (file) {
+        return path.join(p, file);
+    }).filter(function (file) {
+        return fs.statSync(file).isFile();
+    }).forEach(function (file) {
+        console.log("%s (%s)", file, path.extname(file));
+    });
+});
+
+
 //Retrieve ImageLinks
 //https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
 //https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/entities-object1
@@ -69,7 +92,7 @@ Twitter.get('statuses/user_timeline', { screen_name: 'neelerita', count: 2 }, fu
 //const Clarifai = require('clarifai');
 //const dlImg = require('image-downloader');
 //const path = require('path');
-
+/*
 const stream = Twitter.stream('statuses/filter', { track: "notrinap" });
 stream.on('error', err => console.log(err));
 
@@ -92,10 +115,11 @@ stream.on('tweet', tweet => {
         console.log('Image at: ' + filename);
       }
     });
-  });*/
-});
+  });
+});*/
 
-/*
+
+
 // Initialize Discord Bot
 var bot = new Discord.Client({
    token: auth.token,
@@ -131,8 +155,31 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 })
             break;
             }
+            case 'image':{
+                var randomVal = getRandomInt(1,17+1);
+                bot.sen
+                bot.sendMessage({
+                    to:channelID,
+                    message: 'Hello'
+                })
+                bot.uploadFile({
+                    
+                    to:channelID,
+                    message:'Running uploadfile...'+ randomVal + 'hi',
+                    file: '/mnt/c/Users/NeelP/Pictures/Screenshots/Screenshot ('+randomVal+').png'
+                    //filename: '/mnt/c/Users/NeelP/Pictures/Screenshots/Screenshot (9).png'
+
+                }) 
+            break; 
+            }
             // Just add any case commands if you want to..
 
          }
      }
-});*/
+});
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+  }
