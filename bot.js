@@ -1,32 +1,12 @@
-/* 
-commands for bash: 
-$ sudo apt install nodejs-legacy
-*/
-//Set up discord api
-var Discord = require('discord.io');
-var logger = require('winston');
-var auth = require('./discordAuth.json');
-
-//Set up twitter api
-var twit = require('twit');
-var config = require('./config.js');
-var Twitter = new twit(config);
-// Configure logger settings
-logger.remove(logger.transports.Console);
-logger.add(logger.transports.Console, {
-    colorize: true
-});
-logger.level = 'debug';
-
-var count = 0;
 
 
-
+var totalImages = 1;
 var fs = require("fs"),
     path = require("path");
 
 //var p = "../" // current directory
-var p = "/mnt/c/Users/NeelP/Pictures/Screenshots"
+//var p = "/mnt/c/Users/Neel/Pictures/Screenshots"
+var p = "/Users/Neel/Pictures/Screenshots"
 fs.readdir(p, function (err, files) {
     if (err) {
         throw err;
@@ -38,88 +18,50 @@ fs.readdir(p, function (err, files) {
         return fs.statSync(file).isFile();
     }).forEach(function (file) {
         console.log("%s (%s)", file, path.extname(file));
+        totalImages+=1;
     });
 });
 
 
-//Retrieve ImageLinks
-//https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
-//https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/entities-object1
-
 /*
-Twitter.get('statuses/user_timeline', { screen_name: 'neelerita', count: 2 }, function (err, data, response) {
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    //console.log(data);
-    
-    var array = data;
-
-    //For EVERY TWEET in the array of tweets
-    for(var index in array) {
-        console.log('.................. TWEET START ................');
-        var tweet = array[index];
-        
-        //For EVERY FIELDNAME in a tweet
-        for(var fieldName in tweet) {
-            var fieldValue = tweet[fieldName];
-            //console.log(fieldName); //item name
-            console.log(fieldName.retwe)
-            //If the field name is entities
-            if (fieldName == 'entities'){
-                console.log("[FieldName]: " + fieldName);
-                console.log(fieldValue); //item stuff
-                for (var subField in fieldValue)
-                {
-                    console.log("[Field Value of " + fieldName + "]: " + subField);
-                    if (subField == 'media')
-                    {                   
-                        console.log("YES SUBFIELD IS MEDIA\n");
-                        console.log(fieldName + "\n"); // entities
-                        console.log(fieldValue[0]);
-                        console.log(subField[0]); 
-                        
-                    }
-                }
-            }
-        }
-        console.log('.................. TWEET END ................');
-    }
-  
-    
- })
-  
+  A ping pong bot, whenever you send "ping", it replies "pong".
 */
 
-//const Clarifai = require('clarifai');
-//const dlImg = require('image-downloader');
-//const path = require('path');
+// Import the discord.js module
+const Discord = require('discord.js');
+
+// Create an instance of a Discord client
+const client = new Discord.Client();
+
+// The token of your bot - https://discordapp.com/developers/applications/me
+const token = 'MzcwNzk3MjA0MDY1MjIyNjU2.DMsTXg.r7vu_vfcawlkPJvvnYjWHFKQfaM';
+
+// The ready event is vital, it means that your bot will only start reacting to information
+// from Discord _after_ ready is emitted
+client.on('ready', () => {
+  console.log('I am ready!');
+});
+
+// Create an event listener for messages
+client.on('message', message => {
+  // If the message is "ping"
+  if (message.content === '!ping') {
+    // Send "pong" to the same channel
+    message.channel.send('pong');
+    message.channel.send(totalImages);
+    
+    var randomVal = getRandomInt(1,totalImages+1);
+    var file = new Discord.Attachment();
+    file.setAttachment('/Users/Neel/Pictures/Screenshots/Screenshot ('+randomVal+').png');
+    message.cha
+  }
+});
+
+// Log our bot in
+client.login(token);
+
+
 /*
-const stream = Twitter.stream('statuses/filter', { track: "notrinap" });
-stream.on('error', err => console.log(err));
-
-stream.on('tweet', tweet => {
-  if (tweet.retweeted || !tweet.entities.media || !tweet.entities.media[0]) return; // no image in tweet
-
-  console.log(tweet.entities.media[0].media_url_https);
-
-  /*
-  predict(tweet.entities.media[0].media_url_https, (err, res) => {
-    if (err) console.log(err);
-    const newDir = dir + '/' + res[0].name;
-    if (ls(dir).indexOf(res[0].name) === -1) mkdir(newDir);
-
-    dlImg({
-    url: tweet.entities.media[0].media_url_https,
-      dest: path.join(__dirname, newDir) + '/' + res[0].name + '-' + tweet.user.screen_name + '.jpg',
-      done: (err, filename, image) => {
-        if (err) console.log(err);
-        console.log('Image at: ' + filename);
-      }
-    });
-  });
-});*/
-
-
-
 // Initialize Discord Bot
 var bot = new Discord.Client({
    token: auth.token,
@@ -177,6 +119,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
          }
      }
 });
+*/
+
+
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
