@@ -1,17 +1,35 @@
-//directory setup
+/*
+  A ping pong bot, whenever you send "ping", it replies "pong".
+*/
 var fs = require("fs"),
     path = require("path");
-
-var isRefreshed = 0;
-
-var pathToPicFolder = "C:/Users/Neel/OneDrive/Documents/DiscordBot/PadawanClaudia"
-// C:\Users\Neel\OneDrive\Documents\DiscordBot\PadawanClaudia
+var totalImages = 1;
 //var p = "../" // current directory
 //var p = "/mnt/c/Users/Neel/Pictures/Screenshots"
 //var p = "/Users/Neel/Pictures/Screenshots"
 //var p = "/Users/Neel/Downloads/claudiaGasm/PadawanClaudia"
-var totalImages = 1;
+var p = "D:/Users/Neel/OneDrive/Documents/DiscordBot/PadawanClaudia"
+
+totalImages = 1;
 var arrPaths = [];
+fs.readdir(p, function(err, files) {
+    if (err) {
+        throw err;
+    }
+
+    files.map(function(file) {
+        return path.join(p, file);
+    }).filter(function(file) {
+        return fs.statSync(file).isFile();
+    }).forEach(function(file) {
+        arrPaths.push(file);
+
+        console.log("%s (%s)", file, path.extname(file));
+        
+        //Store path to file in an array of strings
+        totalImages += 1;
+    });
+});
 
 
 
@@ -34,13 +52,10 @@ var commandCounter = 1;
 // Create an event listener for messages
 client.on('message', message => {
     // If the message is "ping"
-    if (message.content === '!claudiaGasm1') {
+    if (message.content === '!claudiaGasm') {
         // Send "pong" to the same channel
 
-        if (isRefreshed != 1){
-            message.channel.send('Folder has not been refreshed. Cannot continue.');
-            return;
-        }
+
 
 
         // message.channel.send('there are ' + totalImages + ' images');
@@ -58,35 +73,6 @@ client.on('message', message => {
 
         file.setAttachment(picturePath);
         message.channel.send(file);
-    }
-    else if (message.content === "!refreshFolder"){
-        
-        totalImages = 1;
-        arrPaths = [];
-        if (!fs.existsSync(pathToPicFolder)) {
-            message.channel.send('Error 404: Sorry. Please try again, and contact @Neel#2970 and he will fix me as soon as possible. Thank you.');
-            return;
-        }
-           
-    
-        fs.readdir(pathToPicFolder, function(err,files){
-            if (err) {
-                throw err;
-            }
-        
-            files.map(function(file){
-                return path.join(pathToPicFolder, file);
-            }).filter(function (file){
-                return fs.statSync(file).isFile();
-            }).forEach(function(file){
-                arrPaths.push(file);
-                totalImages += 1;
-                console.log("%s (%s)", file, path.extname(file));
-            })    
-        })
-        
-        isRefreshed = 1;
-        message.channel.send('Folder has been refreshed!');
     }
 });
 
