@@ -7,8 +7,8 @@ var totalImages = 1;
 //var p = "../" // current directory
 //var p = "/mnt/c/Users/Neel/Pictures/Screenshots"
 //var p = "/Users/Neel/Pictures/Screenshots"
-var p = "/Users/Neel/Downloads/claudiaGasm/PadawanClaudia"
-
+//var p = "/Users/Neel/Downloads/claudiaGasm/PadawanClaudia"
+var p = "D:/Users/Neel/OneDrive/Documents/DiscordBot/PadawanClaudia"
 
 totalImages = 1;
 var arrPaths = [];
@@ -48,7 +48,7 @@ const token = 'MzcwNzk3MjA0MDY1MjIyNjU2.DMsTXg.r7vu_vfcawlkPJvvnYjWHFKQfaM';
 client.on('ready', () => {
     console.log('I am ready!');
 });
-
+var commandCounter = 1;
 // Create an event listener for messages
 client.on('message', message => {
     // If the message is "ping"
@@ -59,10 +59,18 @@ client.on('message', message => {
 
 
         // message.channel.send('there are ' + totalImages + ' images');
-        console.log("\nCOMMAND HAS BEEN USED!\n");
+        console.log("\nCOMMAND HAS BEEN USED %dX!\n", commandCounter);
+        commandCounter++;
        // var randomVal = getRandomInt(1, totalImages + 1);
         var file = new Discord.Attachment();
         var picturePath = arrPaths[Math.floor(Math.random()*arrPaths.length)];
+        try {
+           fs.accessSync(picturePath);
+        } catch (e) {
+          fs.mkdirSync(picturePath);
+          message.channel.send('Error 404: Sorry. Please try again, and contact @Neel#2970 and he will fix me as soon as possible. Thank you.')
+        }
+
         file.setAttachment(picturePath);
         message.channel.send(file);
     }
