@@ -1,35 +1,28 @@
-//Part 1: Discord bot set up
-//=================================================
-// Import the discord.js module
+/* Part 1: Discord bot set up 
+ =================================================
+    - Import the discord.js module
+    - Create an instance of a Discord Client
+    - Token of my bot - https://discordapp.com/developers/applications/me
+    - [Ready] status
+    - Prefix set up
+*/
 const Discord = require('discord.js');
-const client = new Discord.Client(); // Create an instance of a Discord client
-
-// The token of your bot - https://discordapp.com/developers/applications/me
+const client = new Discord.Client();
 const token = 'MzcwNzk3MjA0MDY1MjIyNjU2.DMsTXg.r7vu_vfcawlkPJvvnYjWHFKQfaM';
-
-// The ready event is vital, it means that your bot will only start reacting to information
-// from Discord _after_ ready is emitted
-client.on('ready', () => {
+client.on('ready', () => { 
     console.log('I am ready!');
 });
-
 const prefix = '!!';
-var commandCounter = 1;
 
-//Part 2: SQL specifics
-//=================================================
+/* Part 2: SQL Specifics
+ =================================================== */
 const sql = require ('sqlite');
 sql.open("./commandData.sqlite");
 
-
-//var pathToPicFolder = "C:/Users/Neel/OneDrive/Documents/DiscordBot/PadawanClaudia"
-// C:\Users\Neel\OneDrive\Documents\DiscordBot\PadawanClaudia
-//var p = "../" // current directory
-//var p = "/mnt/c/Users/Neel/Pictures/Screenshots"
-//var p = "/Users/Neel/Pictures/Screenshots"
-//var p = "/Users/Neel/Downloads/claudiaGasm/PadawanClaudia"
-//var totalImages = 1;
-//var arrPaths = [];
+/* Directory tips: 
+ "../" = Current directory
+ "C:\Users\blah" = Absolute Directory
+*/
 
 
 /* claudiaGasm Section */
@@ -37,8 +30,9 @@ var clGpathToPictures;
 var clGisRefreshed = 0;
 var clGtotalImages = 1;
 var clGarrPath = [];
-var fs = require("fs"),
-    path = require("path");
+var fs = require("fs"), path = require("path");
+
+
 
 
 
@@ -48,9 +42,11 @@ client.on('message', message => {
     else if (message.channel.type === "dm") return;  // Ignore DM channels.
     else if (message.author.bot) return;             // Ignore if author is a bot
     else{
+        /* Remove the prefix. Shift command stuff to lowercase */
         const args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
 
+        /* COMMAND 1 */
         if (command === 'testing'){
             message.channel.send('testing recieved');
             var a = args[0];
@@ -60,7 +56,7 @@ client.on('message', message => {
             return;
         }
 
-
+        /* COMMAND 2 */
         if (command === 'activateclaudiagasm'){
             message.channel.send('activation recieved');
             var userInputtedPath = args[0];
@@ -72,28 +68,6 @@ client.on('message', message => {
                 var totalImages = 1;
                 var arrPaths = [];
                 var pathToPicFolder = userInputtedPath;
-                /*
-                if (!fs.existsSync(pathToPicFolder)) {
-                    message.channel.send('Error 404: Sorry. Please try again, and contact @Neel#2970 and he will fix me as soon as possible. Thank you.');
-                    return;
-                }
-
-                fs.readdirsync(pathToPicFolder, function(err,files){
-                    if (err) {
-                        throw err;
-                    }
-                
-                    files.map(function(file){
-                        return path.join(pathToPicFolder, file);
-                    }).filter(function (file){
-                        return fs.statSync(file).isFile();
-                    }).forEach(function(file){
-                        arrPaths.push(file);
-                        totalImages += 1;
-                        console.log("%s (%s)", file, path.extname(file));
-                    })    
-                })*/
-
 
 
                 const testFolder = pathToPicFolder + '/';
@@ -112,7 +86,7 @@ client.on('message', message => {
                 var guildID = message.guild.id;
                
 
-                /*
+            /*
                 SQL TABLE 
                 ============
                 guildID  |  isCLGActivated | clgTotalImages | pathToPicFolder 
@@ -131,9 +105,17 @@ client.on('message', message => {
                     sql.run("CREATE TABLE IF NOT EXISTS commandData (guildID TEXT, isCLGActivated INTEGER, clgTotalImages INTEGER, clgPathToPicFolder TEXT)").then(() => {
                         sql.run("INSERT INTO commandData (guildID, isCLGActivated, clgTotalImages, clgPathToPicFolder) VALUES (?, ?, ?, ?)", [guildID, 1, totalImages, pathToPicFolder]);
                     })
-                });*/
+                });
+            */
                 
-                sql.run(`UPDATE commandData SET isCLGActivated = ${1}, clgTotalImages = ${totalImages} , clgPathToPicFolder = ${pathToPicFolder}, clgArrOfPaths = ${arrPaths} WHERE guildID = ${guildID}`).then (row => {
+                sql.run(`UPDATE commandData 
+                        SET isCLGActivated = ${1},
+                            clgTotalImages = ${totalImages} , 
+                            clgPathToPicFolder = ${pathToPicFolder}, 
+                            clgArrOfPaths = ${arrPaths} 
+                        WHERE guildID = ${guildID}`).then (row => {
+                        
+                    
                     if (!row){
                         sql.run("INSERT INTO commandData (guildID, isCLGActivated, clgTotalImages, clgPathToPicFolder, clgArrOfPaths) VALUES (?, ?, ?, ?, ?)", [guildID, 1, totalImages, pathToPicFolder, arrPaths]);
                     }
@@ -155,6 +137,7 @@ client.on('message', message => {
             return;
         } // end activateClaudiaGasm
 
+        /* COMMAND 3 */
         if (command === 'claudiagasm'){
             //if our guild id does not exist in the table
                 // throw error saying we have not activated this command yet. 
@@ -166,21 +149,17 @@ client.on('message', message => {
                 run random file search
                 send message
             */
-           // message.channel.send("running claudiaGasm");
-            
-//            var getItemResolved = false;
+
 
 
             message.channel.send("Starting  getItem");
             sql.get(`SELECT * FROM commandData WHERE guildID ="${message.guild.id}"`).then(row => {
                 if (!row) return message.reply("ERROR: Your current level is 0");
                 message.reply(`Your current level is ${row.clgTotalImages}`);
-                var rcvRowPaths = 
-                message.reply(`ArrayOfPaths = ${row.clgArrOfPaths}`)
+                var rcvRowPaths = row.clgArrOfPaths;
+                message.reply(`ArrayOfPaths = ${rcvRowPaths.length}`);
               });
-             
-            // close the database connection
-            //db.close();
+            
             /*
             var file = new Discord.Attachment();
             var picturePath = arrPaths[Math.floor(Math.random()*arrPaths.length)];
@@ -194,15 +173,11 @@ client.on('message', message => {
             file.setAttachment(picturePath);
             message.channel.send(file);
             */
-
-
-
             message.channel.send("claudiaGasm end");
-
-           
             return;
         }
 
+        /* COMMAND 4 */
         if (command === 'refreshclaudiagasm'){
             return;
         }
@@ -212,7 +187,38 @@ client.on('message', message => {
 
 }) // client on
 
-    /*if (message.content === "!refreshFolder"){
+// Log our bot in
+client.login(token);
+
+
+
+
+
+
+
+/*
+if (!fs.existsSync(pathToPicFolder)) {
+    message.channel.send('Error 404: Sorry. Please try again, and contact @Neel#2970 and he will fix me as soon as possible. Thank you.');
+    return;
+}
+
+fs.readdirsync(pathToPicFolder, function(err,files){
+    if (err) {
+        throw err;
+    }
+
+    files.map(function(file){
+        return path.join(pathToPicFolder, file);
+    }).filter(function (file){
+        return fs.statSync(file).isFile();
+    }).forEach(function(file){
+        arrPaths.push(file);
+        totalImages += 1;
+        console.log("%s (%s)", file, path.extname(file));
+    })    
+})*/
+
+/*if (message.content === "!refreshFolder"){
         
         totalImages = 1;
         arrPaths = [];
@@ -247,8 +253,6 @@ client.on('message', message => {
 
 
 
-// Log our bot in
-client.login(token);
 
 /** EXTRA FUNCTIONS  */
 
