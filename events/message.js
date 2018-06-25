@@ -21,6 +21,7 @@ module.exports = (client, message) => {
   // args = ["Is", "this", "the", "real", "life?"]
   const args = message.content.slice(settings.prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
+  
 
   // Get the user or member's permission level from the elevation
   const level = client.permlevel(message);

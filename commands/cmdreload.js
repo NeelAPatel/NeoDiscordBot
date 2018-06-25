@@ -1,6 +1,6 @@
 exports.run = async (client, message, args, level) => {// eslint-disable-line no-unused-vars
   if (!args || args.length < 1) 
-    return message.reply("Must provide a command to reload. Derp.");
+    return message.reply("Must provide a command to reload.");
 
   let response = await client.unloadCommand(args[0]);
   if (response) 
@@ -11,4 +11,18 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
     return message.reply(`Error Loading: ${response}`);
 
   message.reply(`The command \`${args[0]}\` has been reloaded`);
+};
+
+exports.conf = {
+  enabled: true,
+  guildOnly: false,
+  aliases: [],
+  permLevel: "Bot Admin"
+};
+
+exports.help = {
+  name: "cmdreload",
+  category: "System",
+  description: "Reloads a command that\"s been modified.",
+  usage: "cmdreload [command]"
 };
