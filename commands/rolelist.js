@@ -60,6 +60,6 @@ exports.conf = {
 exports.help = {
     name: "rolelist",
     category: "Miscelaneous",
-    description: "Lists all the roles and the # of ppl in it",
+    description: "Lists all the roles in order of creation and the # of ppl in it",
     usage: "rolelist"
 };
