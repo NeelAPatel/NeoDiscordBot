@@ -9,6 +9,7 @@ const { promisify } = require("util");
 const readdir = promisify(require("fs").readdir);
 const Enmap = require("enmap"); //npm i enmap
 const EnmapLevel = require("enmap-level"); //npm i enmap-level
+const Provider = require ("enmap-sqlite");
 
 //CLIENT - The bot. 
 const client = new Discord.Client();
@@ -29,6 +30,8 @@ client.aliases = new Enmap();
 
 //SETTINGS - allows us to store per server config? 
 client.settings = new Enmap({provider: new EnmapLevel({name: "settings"})});
+//CMDDB
+client.cmdDB = new Enmap({ provider: new Provider({	name: "cmdDB"	})}); // persists data through reboots
 
 const init = async () => {
 	// Here we load **commands** into memory, as a collection, so they're accessible

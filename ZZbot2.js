@@ -4,7 +4,7 @@
 	thisGuild = guild.id;    
 	array thisCmdList[] = cmdDB.getCommands(thisGuild)
 	if (thisCmdList.contains(cmdName)){
-		thisCmdEnabled = thisCmdList.get(cmdName).isEnabled
+		thisCmdEnabled = taaaahisCmdList.get(cmdName).isEnabled
 		if (thisCmdEnabled){
 			run it
 		}

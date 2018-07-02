@@ -31,21 +31,7 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
             
                 message.reply(`The command \`${args[1]}\` has been reloaded`);
                 break;
-            case "unload":
-                //unloadCMD(client,args[1], message);
-                //message.reply(`The command \`${args[1]}\` has been UNLOADED`);
-                response = await client.unloadCommand(args[0]);
-                if (response) 
-                    return message.reply(`Error Unloading: ${response}`);
-
-                message.reply(`The command \`${args[0]}\` has been unloaded.`);
-                break;
-            case "view":
-                
-
-
-                break;
-
+           
         }
     }
 };
@@ -62,6 +48,6 @@ exports.help = {
     name: "cmds",
     category: "System",
     description: "Tools to adjust commands. Use !help cmds to learn more.",
-    usage: "cmds [load|reload|unload] [command]"
+    usage: "cmds [load|reload] [command]"
 };
   
