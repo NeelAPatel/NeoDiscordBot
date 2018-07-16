@@ -12,7 +12,8 @@ module.exports = (client, guild) => {
 		//Add Guild
 		client.cmdDB.set(guildKey, {
 			guildName: guild.id,
-			commands: ["cmdping", "customcmd"] //array of commands
+			commands: [] //array of commands
 		});
-  }
+	}
+	client.logger.cmd(`[cmdDB ADDED] ${guild.name} (${guild.id}) was added to cmdDB. Owner: ${guild.owner.user.tag} (${guild.owner.user.id})`);
 };

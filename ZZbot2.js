@@ -113,18 +113,18 @@ client.on("message", message => {
 		let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
 		if (currArrCmds.includes(cmdToDisable)) {
 			// remove 
-			message.channel.send(`${cmdToDisable} will be removed.`);
+			//message.channel.send(`${cmdToDisable} will be removed.`);
 			var index = currArrCmds.indexOf(cmdToDisable);
 			if (index > -1) {
 				currArrCmds.splice(index, 1);
 			}
-			message.channel.send(`${cmdToDisable} has been removed from the array.`);
+			//message.channel.send(`${cmdToDisable} has been removed from the array.`);
 
 			client.cmdDB.setProp(guildKey, "commands", currArrCmds);
-			message.channel.send(`${cmdToDisable} has been disabled`);
+			//message.channel.send(`${cmdToDisable} has been disabled`);
 
 		} else {
-			message.channel.send("Command does not exist in cmdDB");
+			//message.channel.send("Command does not exist in cmdDB");
 		}
 	}
 
