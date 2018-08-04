@@ -27,10 +27,7 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
             }
             case "enable": {
                 let cmdToEnable = args[1];
-                /*
-                if (cmdToEnable === "gasm"){
-                    //duplicate file
-                }*/
+     
                 
                 const guildKey = `g-${message.guild.id}`;        
                 let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
@@ -121,15 +118,15 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
 exports.conf = {
     enabled: true,
     guildOnly: false,
-    aliases: ["command", "cmdtools"],
+    aliases: ["cmds"],
     permLevel: "Bot Admin"
 };
   
 exports.help = {
-    name: "cmds",
+    name: "neocmds",
     category: "System",
     description: "Tools to adjust commands. Use !help cmds to learn more.",
-    usage: "cmds [load|reload|enable|disable|startcollection] [command]"
+    usage: "neocmds [load|reload|enable|disable|startcollection] [command]"
 };
   
 

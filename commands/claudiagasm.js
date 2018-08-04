@@ -110,19 +110,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 	
 
 };
-exports.conf = {
-    enabled: true,
-    guildOnly: false,
-    aliases: [],
-    permLevel: "User"
-};
-  
-exports.help = {
-name: "claudiagasm",
-category: "Miscelaneous",
-description: "posts a random picture of claudia",
-usage: "claudiagasm OR\n claudiagasm setpath <path> \n claudiagasm [tracepath|getpath]"
-};
 
 
 async function createDB (client, Enmap, Provider){
@@ -140,3 +127,18 @@ function addDefaultDB(client,guildKey){
 		arrPaths : []
 	});
 }
+exports.conf = {
+    enabled: true,
+    guildOnly: false,
+    aliases: [],
+    permLevel: "User"
+};
+  
+exports.help = {
+	name: "claudiagasm",
+	category: "Miscelaneous",
+	description: "posts a random picture of claudia",
+	usage: "claudiagasm OR\n claudiagasm setpath <path> \n claudiagasm [tracepath|getpath]"
+};
+
+

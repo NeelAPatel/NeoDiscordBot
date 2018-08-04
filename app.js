@@ -30,9 +30,12 @@ client.aliases = new Enmap();
 
 //SETTINGS - allows us to store per server config? 
 client.settings = new Enmap({provider: new EnmapLevel({name: "settings"})});
+
 //CMDDB
 client.cmdDB = new Enmap({ provider: new Provider({	name: "cmdDB"	})}); // persists data through reboots
 client.moduleCmds = require("./modules/customCmds.json");
+
+
 const init = async () => {
 	// Here we load **commands** into memory, as a collection, so they're accessible
 	// here and everywhere else.

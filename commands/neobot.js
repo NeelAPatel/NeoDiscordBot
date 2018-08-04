@@ -39,14 +39,14 @@ exports.run = async(client, message,args,level)=>{
 exports.conf = {
     enabled: true,
     guildOnly: false,
-    aliases: ["bot","botcmd"],
+    aliases: ["botx"],
     permLevel: "Bot Admin"
 };
   
 exports.help = {
-    name: "botx",
+    name: "neobot",
     category: "System",
     description: "Tools for controlling the bot itself.",
-    usage: "botx [load|reload|unload] [command]"
+    usage: "\nneobot [load|reload|unload][command]"
 };
   
