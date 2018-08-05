@@ -135,10 +135,10 @@ exports.conf = {
 };
   
 exports.help = {
-	name: "claudiagasm",
-	category: "Miscelaneous",
-	description: "posts a random picture of claudia",
-	usage: "claudiagasm OR\n claudiagasm setpath <path> \n claudiagasm [tracepath|getpath]"
+name: "claudiagasm",
+category: "Miscelaneous",
+description: "posts a random picture of claudia",
+usage: "claudiagasm OR\n claudiagasm setpath <path> \n claudiagasm [tracepath|getpath]"
 };
 
 
