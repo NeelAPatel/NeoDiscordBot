@@ -2,7 +2,7 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
     
     // if no arguments or length is less than 1 args
     if (!args || args.length < 1){
-      return message.reply("Must provide a command to reload. Derp.");
+      return message.reply("Available sub commands: \n startcollection\n enable <command> \n disable <command> \n load <command> \n unload <command> \n viewDB");
       // if no commands, show help
     }
     else
@@ -31,7 +31,7 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
                 
                 const guildKey = `g-${message.guild.id}`;        
                 let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
-                // check ListOfModuleCMDS
+                // check ListOf client.moduleCmds = modules available for the bot
 
                 if (currArrCmds.includes(cmdToEnable)) {
                     // we good. 
@@ -46,9 +46,6 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
             }
             case "disable": {
                 let cmdToDisable = args[1];
-                if (cmdToDisable === "gasm"){
-                    //duplicate file
-                }
                 
                 const guildKey = `g-${message.guild.id}`;        
                 let currArrCmds = client.cmdDB.getProp(guildKey, "commands");

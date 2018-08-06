@@ -15,7 +15,7 @@ const Provider = require ("enmap-sqlite");
 const client = new Discord.Client();
 
 //EXTRANEOUS FILES
-client.config = require("./botConfig.js");
+client.config = require("./AA_PRIV_CONFIG.js");
 
 //client.config.token = token
 //client.config.prefix = prefix

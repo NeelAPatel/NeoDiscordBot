@@ -39,9 +39,9 @@ exports.run = async(client, message, args, level) => {
             //=== COMMAND PROPERTIES 
             if (!args[0]) // No args = Regular !gasm
             {
-				let folderPath = client.cGasmDat.getProp(guildKey, "folderPath");
+				let folderPath = client.gasmDat.getProp(guildKey, "folderPath");
 				message.channel.send(`${folderPath}`);
-				let arrPaths = client.cGasmDat.getProp(guildKey, "arrPaths");
+				let arrPaths = client.gasmDat.getProp(guildKey, "arrPaths");
 				if (!(folderPath === "fp-") && (arrPaths.length > 0)){
 					var file = new Discord.Attachment();
 					
@@ -57,32 +57,36 @@ exports.run = async(client, message, args, level) => {
 			
 					file.setAttachment(picturePath);
 					message.channel.send(file);
-					console.log("ClaudiaGasm: [%d][%s]\n", randomNum,  picturePath);
+					console.log("Gasm: [%d][%s]\n", randomNum,  picturePath);
 				}
 				else {
-					message.channel.send("ERROR: Please run `!claudiaGasm setpath <path>`");	
+					message.channel.send("ERROR: Please run `!Gasm setpath <path>`");	
 				}
 				
 			}   
-            else if (args[0] === "setpath" || args[0] === "trace" && args[1]) //!gasm setpath <path>
+            else if (args[0] === "setpath" || args[0] === "trace") //!gasm setpath <path>
             {
+				//Gets the Path argument
 				userPath = args[1];
+
+				//Checks if the path is valid
 				if (userPath === undefined)
 					message.channel.send("ERROR: Missing path argument");
 				else if (!fs.existsSync(userPath)) 
 					message.channel.send("ERROR: Path does not exist.");
 				else{
+					//Path is valid!
 					
-					client.cGasmDat.setProp(guildKey, "folderPath", args[1]);
+					//Stores the path in gasmDB
+					client.gasmDat.setProp(guildKey, "folderPath", args[1]);
 					
-					let arrPaths = client.cGasmDat.getProp(guildKey, "arrPaths");
-					arrPaths = [];
-					fs.readdir(userPath, function(err,files) //readdir is asynchronous
-					{
-						if (err) {
-							throw err;
-						}
-					
+					//Gets the array of paths from gasmDB
+					let arrPaths = client.gasmDat.getProp(guildKey, "arrPaths");
+					arrPaths = []; // resets the array to empty
+					fs.readdir(userPath, function(err,files) { //readdir is asynchronous
+						if (err) { throw err; }
+						/* Fetches each from the given userPath 
+						and adds its path to the array */
 						files.map(function(file){
 							return path.join(userPath, file);
 						}).filter(function (file){
@@ -92,26 +96,28 @@ exports.run = async(client, message, args, level) => {
 							console.log("%s (%s)", file, path.extname(file));
 						})    
 						
-						client.cGasmDat.setProp(guildKey,"arrPaths", arrPaths);
+						// adds new array to gasmDB
+						client.gasmDat.setProp(guildKey,"arrPaths", arrPaths);
 					});
+
+					//Wrapping up: Let user know the operation is complete + the path that was traced
 					message.channel.send("Folder trace complete!");
-					let folderPath = client.cGasmDat.getProp(guildKey, "folderPath");
+					let folderPath = client.gasmDat.getProp(guildKey, "folderPath");
 					message.channel.send(`${folderPath}`);
 				}
 			}
 			else if (args[0] === "getpath"){
-				let folderPath = client.cGasmDat.getProp(guildKey, "folderPath");
+				// return the currently traced path
+				let folderPath = client.gasmDat.getProp(guildKey, "folderPath");
 					message.channel.send(`${folderPath}`);
 			}
 			else if (args[0] === "delFromDB"){
-				if (client.cGasmDat.has(guildKey)){
-					client.cGasmDat.delete(guildKey);
+				// removes date from gasmDB
+				if (client.gasmDat.has(guildKey)){
+					client.gasmDat.delete(guildKey);
 				}
 			}
 		}
-
-
-        }
         else
         {
             message.channel.send("Sorry, this module is not enabled here.");
@@ -140,6 +146,22 @@ function addDefaultDB(client,guildKey){
 	});
 }
 
+function embedERROR(message, errMsg,errFooter){
+	const embed = {
+		"title": "ERROR:",
+		"description": errMsg,
+		"color": 13632027,
+		"footer": {
+		  "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
+		  "text": errFooter
+		}
+	  };
+	  message.channel.send({ embed });
+}
+
+function embedSUCCESS(message,goodMsg,goodFooter){
+
+}
 
 exports.conf = {
     enabled: true,
