@@ -2,7 +2,7 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
     
     // if no arguments or length is less than 1 args
     if (!args || args.length < 1){
-      return message.reply("Available sub commands: \n startcollection\n enable <command> \n disable <command> \n load <command> \n unload <command> \n viewDB");
+      return message.channel.send("Available sub commands: \n`startcollection`\n`enable <command>`\n`disable <command>`\n`load <command>`\n`unload <command>`\n`viewDB`");
       // if no commands, show help
     }
     else
@@ -21,8 +21,14 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
                         guildName: message.guild.id,
                         commands: [] //array of commands
                     });
+                    message.channel.send(`Added ${message.guild.name} to ModulesManagement Database. You can now start enabling modules!`);
+                    message.channel.send(`The following modules are available for use: ${client.moduleCmds.arrModuleCommands} `)
                 }
-                //message.channel.send("process complete");
+                else
+                {
+                    //guild key is already in the database
+                    message.channel.send("Server `"+ message.guild.name +"` already exists in the ModulesManagement Database.\nPlease run `!neocmds listmodules` to view available modules.");
+                }
                 break;
             }
             case "enable": {
