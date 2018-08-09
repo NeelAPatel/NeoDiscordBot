@@ -11,26 +11,34 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
         let response = null;
         switch (cmdType)
         {   
-            case "startcollection":{
-                //message.channel.send("starting process");
-                const guildKey = `g-${message.guild.id}`;
-                //if cmdDB does not have guildKey...
-                if (!client.cmdDB.has(guildKey)) {
-                    //Add Guild
-                    client.cmdDB.set(guildKey, {
-                        guildName: message.guild.id,
-                        commands: [] //array of commands
-                    });
-                    message.channel.send(`Added ${message.guild.name} to ModulesManagement Database. You can now start enabling modules!`);
-                    message.channel.send(`The following modules are available for use: ${client.moduleCmds.arrModuleCommands} `)
-                }
-                else
-                {
-                    //guild key is already in the database
-                    message.channel.send("Server `"+ message.guild.name +"` already exists in the ModulesManagement Database.\nPlease run `!neocmds listmodules` to view available modules.");
-                }
+            //Load reload => BotSystem level... so maybe neobot?
+            case "load":{
+                response = await client.loadCommand(args[1]);
+                //loadCMD(client,args[1], message);
+                if (response)  
+                    return message.reply(`Error Loading: ${response}`);
+
+                message.reply(`The command \`${args[1]}\` has been loaded`);
                 break;
             }
+            case "reload":{
+                
+                //unloadCMD(client,args[1], message);
+                //loadCMD(client,args[1], message);
+                //message.reply(`The command \`${args[1]}\` has been RELOADED`);
+                response = await client.unloadCommand(args[1]);
+                if (response) 
+                return message.reply(`Error Unloading: ${response}`);
+            
+                response = client.loadCommand(args[1]);
+                if (response)  
+                return message.reply(`Error Loading: ${response}`);
+            
+                message.reply(`The command \`${args[1]}\` has been reloaded`);
+                break;
+            }
+
+            //Enable/Disable commands for currentServer
             case "enable": {
                 let cmdToEnable = args[1];
      
@@ -73,32 +81,29 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
                 }
                 break;
             }
-            case "load":{
-                response = await client.loadCommand(args[1]);
-                //loadCMD(client,args[1], message);
-                if (response)  
-                    return message.reply(`Error Loading: ${response}`);
 
-                message.reply(`The command \`${args[1]}\` has been loaded`);
+
+            case "setupModuleDB":{
+                //message.channel.send("starting process");
+                const guildKey = `g-${message.guild.id}`;
+                //if cmdDB does not have guildKey...
+                if (!client.cmdDB.has(guildKey)) {
+                    //Add Guild
+                    client.cmdDB.set(guildKey, {
+                        guildName: message.guild.id,
+                        commands: [] //array of commands
+                    });
+                    message.channel.send(`Added ${message.guild.name} to ModulesManagement Database. You can now start enabling modules!`);
+                    message.channel.send(`The following modules are available for use: ${client.moduleCmds.arrModuleCommands} `)
+                }
+                else
+                {
+                    //guild key is already in the database
+                    message.channel.send("Server `"+ message.guild.name +"` already exists in the ModulesManagement Database.\nPlease run `!neocmds listmodules` to view available modules.");
+                }
                 break;
             }
-            case "reload":{
-                
-                //unloadCMD(client,args[1], message);
-                //loadCMD(client,args[1], message);
-                //message.reply(`The command \`${args[1]}\` has been RELOADED`);
-                response = await client.unloadCommand(args[1]);
-                if (response) 
-                return message.reply(`Error Unloading: ${response}`);
-            
-                response = client.loadCommand(args[1]);
-                if (response)  
-                return message.reply(`Error Loading: ${response}`);
-            
-                message.reply(`The command \`${args[1]}\` has been reloaded`);
-                break;
-            }
-            case "viewDB":{
+            case "enabledModules":{
                 //const Enmap = require("enmap"); //npm i enmap
                 const EnmapLevel = require("enmap-level"); //npm i enmap-level
                 const Provider = require("enmap-sqlite");
@@ -107,10 +112,20 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
 
                 if (client.cmdDB.has(guildKey)){
                     let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
-                    message.channel.send(`This server ${guildKey} has these module commands enabled:[ ${currArrCmds} ]`);
+                    message.channel.send(`This server ${guildKey} has the following module commands enabled:[ ${currArrCmds} ]`);
+                }
+                else
+                {
+                    message.channel.send("This server was not found in the database. Please consider running `!neocmds setupModuleDB`");
                 }
 
                 break;
+            }
+            case "listModules":{
+                //list all available modules
+            }
+            case "help":{
+                //give detailed embeded help description
             }
            
         }

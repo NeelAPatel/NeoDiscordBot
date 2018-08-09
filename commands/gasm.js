@@ -3,6 +3,8 @@ exports.run = async(client, message, args, level) => {
     // Key = numeric identifier of the current guild
     const guildKey = `g-${message.guild.id}`;
 
+
+
     if (!(client.cmdDB.has(guildKey))) // if cmdDB does not have the key
     {
         // this.guild is not included in the module-command database
@@ -146,22 +148,6 @@ function addDefaultDB(client,guildKey){
 	});
 }
 
-function embedERROR(message, errMsg,errFooter){
-	const embed = {
-		"title": "ERROR:",
-		"description": errMsg,
-		"color": 13632027,
-		"footer": {
-		  "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
-		  "text": errFooter
-		}
-	  };
-	  message.channel.send({ embed });
-}
-
-function embedSUCCESS(message,goodMsg,goodFooter){
-
-}
 
 exports.conf = {
     enabled: true,
