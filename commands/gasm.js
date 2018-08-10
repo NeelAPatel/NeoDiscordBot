@@ -3,8 +3,6 @@ exports.run = async(client, message, args, level) => {
     // Key = numeric identifier of the current guild
     const guildKey = `g-${message.guild.id}`;
 
-
-
     if (!(client.cmdDB.has(guildKey))) // if cmdDB does not have the key
     {
         // this.guild is not included in the module-command database
@@ -28,11 +26,11 @@ exports.run = async(client, message, args, level) => {
 			const Provider = require("enmap-sqlite");
 
             //if db doesn't exist, create and insert default values
-			if (!client.gasmDat){
+			if (!client.gasmDB){
 				await createDB(client,Enmap,Provider);
 				message.channel.send("Database created.");
 			}
-			if (!client.gasmDat.has(guildKey)){
+			if (!client.gasmDB.has(guildKey)){
 				addDefaultDB(client,guildKey);
 				message.channel.send("Guild added to gasmDB");
             }
@@ -41,9 +39,9 @@ exports.run = async(client, message, args, level) => {
             //=== COMMAND PROPERTIES 
             if (!args[0]) // No args = Regular !gasm
             {
-				let folderPath = client.gasmDat.getProp(guildKey, "folderPath");
+				let folderPath = client.gasmDB.getProp(guildKey, "folderPath");
 				message.channel.send(`${folderPath}`);
-				let arrPaths = client.gasmDat.getProp(guildKey, "arrPaths");
+				let arrPaths = client.gasmDB.getProp(guildKey, "arrPaths");
 				if (!(folderPath === "fp-") && (arrPaths.length > 0)){
 					var file = new Discord.Attachment();
 					
@@ -80,10 +78,10 @@ exports.run = async(client, message, args, level) => {
 					//Path is valid!
 					
 					//Stores the path in gasmDB
-					client.gasmDat.setProp(guildKey, "folderPath", args[1]);
+					client.gasmDB.setProp(guildKey, "folderPath", args[1]);
 					
 					//Gets the array of paths from gasmDB
-					let arrPaths = client.gasmDat.getProp(guildKey, "arrPaths");
+					let arrPaths = client.gasmDB.getProp(guildKey, "arrPaths");
 					arrPaths = []; // resets the array to empty
 					fs.readdir(userPath, function(err,files) { //readdir is asynchronous
 						if (err) { throw err; }
@@ -99,24 +97,24 @@ exports.run = async(client, message, args, level) => {
 						})    
 						
 						// adds new array to gasmDB
-						client.gasmDat.setProp(guildKey,"arrPaths", arrPaths);
+						client.gasmDB.setProp(guildKey,"arrPaths", arrPaths);
 					});
 
 					//Wrapping up: Let user know the operation is complete + the path that was traced
 					message.channel.send("Folder trace complete!");
-					let folderPath = client.gasmDat.getProp(guildKey, "folderPath");
+					let folderPath = client.gasmDB.getProp(guildKey, "folderPath");
 					message.channel.send(`${folderPath}`);
 				}
 			}
 			else if (args[0] === "getpath"){
 				// return the currently traced path
-				let folderPath = client.gasmDat.getProp(guildKey, "folderPath");
+				let folderPath = client.gasmDB.getProp(guildKey, "folderPath");
 					message.channel.send(`${folderPath}`);
 			}
 			else if (args[0] === "delFromDB"){
 				// removes date from gasmDB
-				if (client.gasmDat.has(guildKey)){
-					client.gasmDat.delete(guildKey);
+				if (client.gasmDB.has(guildKey)){
+					client.gasmDB.delete(guildKey);
 				}
 			}
 		}
@@ -133,15 +131,15 @@ exports.run = async(client, message, args, level) => {
 
 //====== HELPER METHODS ======
 async function createDB (client, Enmap, Provider){
-	client.gasmDat = new Enmap({
+	client.gasmDB = new Enmap({
 		provider: new Provider({
-			name: "gasmDat"
+			name: "gasmDB"
 		})
 	});
 }
 
 function addDefaultDB(client,guildKey){
-	client.gasmDat.set(guildKey, {
+	client.gasmDB.set(guildKey, {
 		folderPath : "[Blank]",
 		//currNumPics : "cnp-",
 		arrPaths : []

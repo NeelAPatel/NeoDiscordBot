@@ -1,10 +1,12 @@
 var methods = {
     statusMsg: function(message, status, msgTitle, msgMain, msgFooter){
         var clr = 8311585;
-        if (status === "grn")
+        if (status == "grn"){
             clr = 8311585;
-        else (status === "red")
+        }
+        else if (status == "red"){
             clr = 13632027;
+        }
     
         const embed = {
             "title": msgTitle,

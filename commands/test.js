@@ -6,7 +6,7 @@ exports.run = async (client, message, args, level) => {
         case "status":
         {
             message.channel.send ("running status...");
-            msgStatus.errorMsg(message,args[1], args[2], args[3], args[4]);
+            msgStatus.statusMsg(message,args[1], args[2], args[3], args[4]);
             message.channel.send ("status finished");
         }
     }
