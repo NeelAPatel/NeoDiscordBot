@@ -11,6 +11,12 @@ exports.run = async (client, message, args, level) => {
     msgFormat.status(message,"title4", "Hello!\n `123`" +  `${x}`);
     msgFormat.status(message,"title5", "Hello! `" + `${x}` +"`");
 
+
+    /*
+    msgFormat.status(message,"Success!", );
+    msgFormat.err(message, "ERROR!", );
+    */
+
 }
 
 exports.conf = {

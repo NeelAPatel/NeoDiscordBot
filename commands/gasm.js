@@ -1,5 +1,8 @@
 exports.run = async(client, message, args, level) => {
-    
+
+	//External
+	var msgFormat = require('../modules/funcStatusMsg.js');
+
     // Key = numeric identifier of the current guild
     const guildKey = `g-${message.guild.id}`;
 
@@ -28,11 +31,11 @@ exports.run = async(client, message, args, level) => {
             //if db doesn't exist, create and insert default values
 			if (!client.gasmDB){
 				await createDB(client,Enmap,Provider);
-				message.channel.send("Database created.");
+				msgFormat.status(message,"Success!","Database created.");
 			}
 			if (!client.gasmDB.has(guildKey)){
 				addDefaultDB(client,guildKey);
-				message.channel.send("Guild added to gasmDB");
+				msgFormat.status(message,"Success!","Guild added to gasmDB");
             }
             
 
@@ -40,7 +43,7 @@ exports.run = async(client, message, args, level) => {
             if (!args[0]) // No args = Regular !gasm
             {
 				let folderPath = client.gasmDB.getProp(guildKey, "folderPath");
-				message.channel.send(`${folderPath}`);
+				//`${folderPath}`);
 				let arrPaths = client.gasmDB.getProp(guildKey, "arrPaths");
 				if (!(folderPath === "fp-") && (arrPaths.length > 0)){
 					var file = new Discord.Attachment();
@@ -51,7 +54,7 @@ exports.run = async(client, message, args, level) => {
 					fs.accessSync(picturePath);
 					} catch (e) {
 					fs.mkdirSync(picturePath);
-					console.log("The path you entered does not exist. Please try again.")
+						console.log("The path you entered does not exist. Please try again.")
 					//sendMessage(message, 'ERROR', 'ERROR', `The path you entered does not exist. Please try again.`);
 					}
 			
@@ -60,7 +63,7 @@ exports.run = async(client, message, args, level) => {
 					console.log("Gasm: [%d][%s]\n", randomNum,  picturePath);
 				}
 				else {
-					message.channel.send("ERROR: Please run `!Gasm setpath <path>`");	
+					msgFormat.err(message, "ERROR!","Please run `!Gasm setpath <path>`");	
 				}
 				
 			}   
@@ -71,9 +74,9 @@ exports.run = async(client, message, args, level) => {
 
 				//Checks if the path is valid
 				if (userPath === undefined)
-					message.channel.send("ERROR: Missing path argument");
+					msgFormat.err(message, "ERROR!","Missing path argument");
 				else if (!fs.existsSync(userPath)) 
-					message.channel.send("ERROR: Path does not exist.");
+					msgFormat.err(message, "ERROR!","Path does not exist.");
 				else{
 					//Path is valid!
 					
@@ -101,26 +104,30 @@ exports.run = async(client, message, args, level) => {
 					});
 
 					//Wrapping up: Let user know the operation is complete + the path that was traced
-					message.channel.send("Folder trace complete!");
+					
 					let folderPath = client.gasmDB.getProp(guildKey, "folderPath");
-					message.channel.send(`${folderPath}`);
+					msgFormat.status(message,"Success!","Folder trace complete!\n Traced Path: " + `${folderPath}`);
 				}
 			}
 			else if (args[0] === "getpath"){
 				// return the currently traced path
 				let folderPath = client.gasmDB.getProp(guildKey, "folderPath");
-					message.channel.send(`${folderPath}`);
+				msgFormat.status(message,"Current Path:",`${folderPath}`);
 			}
 			else if (args[0] === "delFromDB"){
 				// removes date from gasmDB
 				if (client.gasmDB.has(guildKey)){
 					client.gasmDB.delete(guildKey);
+					msgFormat.status(message,"Success!", "!gasm data has for this guild has been deleted");
+				}
+				else{
+					msgFormat.err(message,"Not Found", "!gasm data has for this guild could not be found.");
 				}
 			}
 		}
         else
         {
-            message.channel.send("Sorry, this module is not enabled here.");
+            msgFormat.err(message, "ERROR!","Sorry, this module is not enabled here.");
         }
     }
 
