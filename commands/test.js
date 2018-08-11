@@ -1,15 +1,16 @@
 exports.run = async (client, message, args, level) => {
     	//TESTING
-    var msgStatus = require('../modules/funcStatusMsg.js');
+    var msgFormat = require('../modules/funcStatusMsg.js');
     
-    switch(args[0]){
-        case "status":
-        {
-            message.channel.send ("running status...");
-            msgStatus.statusMsg(message,args[1], args[2], args[3], args[4]);
-            message.channel.send ("status finished");
-        }
-    }
+    msgFormat.err(message, "errTitle","errMsg");
+    msgFormat.status(message, "title","mainMsg");
+
+    var x = args[0];
+    msgFormat.status(message,"title2", `${x}`);
+    msgFormat.status(message,"title3", "Hello!" + `${x}`);
+    msgFormat.status(message,"title4", "Hello!\n `123`" +  `${x}`);
+    msgFormat.status(message,"title5", "Hello! `" + `${x}` +"`");
+
 }
 
 exports.conf = {
