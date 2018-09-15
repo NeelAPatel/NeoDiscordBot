@@ -1,8 +1,12 @@
 exports.run = async (client, message, args, level) => {// eslint-disable-line no-unused-vars
     
+    //External
+	var msgFormat = require('../modules/funcStatusMsg.js');
+    process.on('unhandledRejection', (e) => {
+        message.channel.send("MAJOR ERROR! Contact @Neel#2970 \n ```\n" + `${e.stack})` + "\n```")})
     // if no arguments or length is less than 1 args
     if (!args || args.length < 1){
-      return message.channel.send("Available sub commands: \n`startcollection`\n`enable <command>`\n`disable <command>`\n`load <command>`\n`unload <command>`\n`viewDB`");
+      return message.channel.send("Please use !neocmds help to know exactly how to use the subcommands.");
       // if no commands, show help
     }
     else
@@ -14,70 +18,73 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
             //Load reload => BotSystem level... so maybe neobot?
             case "load":{
                 response = await client.loadCommand(args[1]);
-                //loadCMD(client,args[1], message);
                 if (response)  
-                    return message.reply(`Error Loading: ${response}`);
+                    return msgFormat.err(message,"Error!", `Error Loading: ${response}`);
 
-                message.reply(`The command \`${args[1]}\` has been loaded`);
+                msgFormat.status(message,"Success!", `The command \`${args[1]}\` has been loaded`);
                 break;
             }
             case "reload":{
-                
-                //unloadCMD(client,args[1], message);
-                //loadCMD(client,args[1], message);
-                //message.reply(`The command \`${args[1]}\` has been RELOADED`);
                 response = await client.unloadCommand(args[1]);
                 if (response) 
-                return message.reply(`Error Unloading: ${response}`);
+                    return msgFormat.err(message,"Error!", `Error unloading: ${response}`);
             
                 response = client.loadCommand(args[1]);
                 if (response)  
-                return message.reply(`Error Loading: ${response}`);
+                    return msgFormat.err(message,"Error!", `Error Loading: ${response}`);
             
-                message.reply(`The command \`${args[1]}\` has been reloaded`);
+                msgFormat.status(message,"Success!", `The command \`${args[1]}\` has been reloaded`);
                 break;
             }
+
 
             //Enable/Disable commands for currentServer
             case "enable": {
                 let cmdToEnable = args[1];
-     
-                
-                const guildKey = `g-${message.guild.id}`;        
-                let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
-                // check ListOf client.moduleCmds = modules available for the bot
+                const guildKey = `g-${message.guild.id}`;
 
-                if (currArrCmds.includes(cmdToEnable)) {
-                    // we good. 
-                   // message.channel.send(`${cmdToEnable} is already included.`);
-                } else {
-                    //message.channel.send(`${cmdToEnable} will be pushed.`);
-                    currArrCmds.push(cmdToEnable);
-                    message.channel.send(`${cmdToEnable} module has been enabled.`);
-                    client.cmdDB.setProp(guildKey,"commands", currArrCmds);
+                // check ListOf client.moduleCmds = modules available for the bot
+                if (!client.cmdDB.has(guildKey)){
+                    //if guild is not in cmdDB   
+                    msgFormat.err(message, "Error", `${message.guild.name}` + " is not in the ModuleManagement Database.\n Please run `!neocmds setupModuleDB`")
                 }
+                else{
+                    let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
+                    if (currArrCmds.includes(cmdToEnable)) {
+                        // we good. 
+                        msgFormat.status (message, " :) ", "This command is already enabled for this server.")
+                    } else {
+                        currArrCmds.push(cmdToEnable);
+                        client.cmdDB.setProp(guildKey,"commands", currArrCmds);
+                        msgFormat.status(message, "Success!", `${cmdToEnable} module has been enabled for this server.`)
+                    }
+                }                
                 break;
             }
             case "disable": {
                 let cmdToDisable = args[1];
-                
                 const guildKey = `g-${message.guild.id}`;        
-                let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
-                // check ListOfModuleCMDS
-                
-                if (currArrCmds.includes(cmdToDisable)) {
-                    // remove 
-                    //message.channel.send(`${cmdToDisable} will be removed.`);
-                    var index = currArrCmds.indexOf(cmdToDisable);
-                    if (index > -1) {
-                        currArrCmds.splice(index, 1);
-                    }
-                    //message.channel.send(`${cmdToDisable} has been removed from the array.`);
-                    client.cmdDB.setProp(guildKey, "commands", currArrCmds);
-                   // message.channel.send(`${cmdToDisable} has been disabled`);
 
-                } else {
-                    //message.channel.send("Command does not exist in cmdDB");
+                if (!client.cmdDB.has(guildKey)){
+                    //if guild is not in cmdDB   
+                    msgFormat.err(message, "Error", `${message.guild.name}` + " is not in the ModuleManagement Database.\n Please run `!neocmds setupModuleDB`")
+                }
+                else{
+                    let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
+                    if (currArrCmds.includes(cmdToDisable)) {
+                        // remove 
+                        var index = currArrCmds.indexOf(cmdToDisable);
+                        if (index > -1) {
+                            currArrCmds.splice(index, 1);
+                        }
+                        client.cmdDB.setProp(guildKey, "commands", currArrCmds);
+                        
+                        msgFormat.status(message, "Success!", `${cmdToDisable} module has been removed for this server.`)
+                    // message.channel.send(`${cmdToDisable} has been disabled`);
+
+                    } else {
+                        msgFormat.status (message, " :) ", "This command is already enabled for this server.")
+                    }
                 }
                 break;
             }
@@ -122,15 +129,61 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
                 break;
             }
             case "listModules":{
-                //list all available modules
+                message.channel.send(`The following modules are available for use: ${client.moduleCmds.arrModuleCommands} `)
             }
             case "help":{
                 //give detailed embeded help description
+                showHelp(message);
             }
            
         }
     }
 };
+
+
+function showHelp(message){
+    message.channel.send("!neocmds is built to control commands at the base level. If you don't know what you're doing, stop and contact the Bot Admin: `Neel#2970` \n__**The following sub commands are available for use:** __")
+    const embed = {
+        "title": "!neocmds help",
+        "color": 16098851,
+        "fields": [
+          {
+            "name": "load <cmd>",
+            "value": "Loads a command from the server, mainly used when a new command is added while the bot is running. "
+          },
+          {
+            "name": "reload <cmd>",
+            "value": "Removes the command from memory and reloads. Used when a command is edited and changes need to be deployed."
+          },
+          {
+            "name": "enable <cmd>",
+            "value": "Enables a command for this specific server. "
+          },
+          {
+            "name": "disable <cmd>",
+            "value": "Disables a command for this specific server. "
+          },
+          {
+            "name": "setupModuleDB",
+            "value": "Adds the server to the Database so that Module-Commands can be enabled for use."
+          },
+          {
+            "name": "listEnabledModules",
+            "value": "Returns a list of modules that are enabled in the server"
+          },
+          {
+            "name": "availableModules",
+            "value": "Lists all available modules"
+          },
+          {
+            "name": "help",
+            "value": "Shows this message again"
+          }
+        ]
+      };
+
+    message.channel.send({embed});
+}
 
 
 exports.conf = {
@@ -143,8 +196,8 @@ exports.conf = {
 exports.help = {
     name: "neocmds",
     category: "System",
-    description: "Tools to adjust commands. Use !help cmds to learn more.",
-    usage: "neocmds [load|reload|enable|disable|startcollection] [command]"
+    description: "Tools to adjust commands. Use !neocmds help to learn more.",
+    usage: "!neocmds help"
 };
   
 
@@ -161,4 +214,16 @@ args:   0      1                2
                gasm            <name>
       startcollection 
 
+*/
+
+
+/* //Doesn't seem to do anything
+case "unload": {
+    let response = await client.unloadCommand(args[1]);
+    if (response) 
+        return message.reply(`Error Unloading: ${response}`);
+
+    message.reply(`The command \`${args[1]}\` has been unloaded.`);
+    break;
+}
 */

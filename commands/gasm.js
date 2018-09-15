@@ -163,7 +163,7 @@ exports.conf = {
   
 exports.help = {
     name: "gasm",
-    category: "Miscelaneous",
+    category: "Module-based Commands | requires enabling for each server",
     description: "posts a random picture of the person you choose",
     usage: "!gasm OR\n !gasm setpath <path> \n !gasm [tracepath|getpath]"
 };

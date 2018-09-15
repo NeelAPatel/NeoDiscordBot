@@ -21,7 +21,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         color: 9585100,
         description: hugeRolesString,
         footer: {
-            text: "~ Fear the Attic Wizard ~"
+            text: ""
         }
     }});
     
