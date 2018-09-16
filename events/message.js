@@ -57,6 +57,6 @@ module.exports = (client, message) => {
     message.flags.push(args.shift().slice(1));
   }
   // If the command exists, **AND** the user has permission, run it.
-  client.logger.cmd(`[CMD] ${client.config.permLevels.find(l => l.level === level).name} ${message.author.username} (${message.author.id}) ran command ${cmd.help.name} ${args}`);
+  client.logger.cmd(`[G:- ${message.guild.name}] [${client.config.permLevels.find(l => l.level === level).name}] ${message.author.username} == ${message.member.displayName} (${message.author.id}) ran command '${cmd.help.name}' w/ [${args}]`);
   cmd.run(client, message, args, level);
 };

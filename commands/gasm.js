@@ -60,7 +60,7 @@ exports.run = async(client, message, args, level) => {
 			
 					file.setAttachment(picturePath);
 					message.channel.send(file);
-					console.log("Gasm: [%d][%s]\n", randomNum,  picturePath);
+					console.log("                       GasmUpload -  [%s]", picturePath);
 				}
 				else {
 					msgFormat.err(message, "ERROR!","Please run `!Gasm setpath <path>`");	
