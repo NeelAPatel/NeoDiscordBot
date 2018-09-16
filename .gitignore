@@ -3,3 +3,6 @@ AA_PRIV_CONFIG.js
 AA_PRIV_CONFIG.json
 /node_modules/
 /ZZ-PersonalSave/
+/data/enmap.sqlite
+/data/enmap.sqlite-shm
+/data/enmap.sqlite-wal

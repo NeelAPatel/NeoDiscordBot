@@ -1,0 +1,30 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "description": "This project started by basing my bot off of [Guidebot by AnIdiotsGuide](https://github.com/AnIdiotsGuide/guidebot) andis an attempt to make it my own.",
+  "main": "AA_PRIV_CONFIG.js",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "discord.js": "^11.3.2",
+    "enmap": "^3.0.4",
+    "enmap-level": "^2.1.0",
+    "enmap-sqlite": "^2.0.3",
+    "moment": "^2.22.2",
+    "moment-duration-format": "^2.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeelAPatel/NeoDiscordBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NeelAPatel/NeoDiscordBot/issues"
+  },
+  "homepage": "https://github.com/NeelAPatel/NeoDiscordBot#readme",
+  "keywords": []
+}
