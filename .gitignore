@@ -6,3 +6,9 @@ AA_PRIV_CONFIG.json
 /data/enmap.sqlite
 /data/enmap.sqlite-shm
 /data/enmap.sqlite-wal
+*.sqlite-shm
+*.sqlite-wal
+data/enmap.sqlite-shm
+data/enmap.sqlite-wal
+*.sqlite-shm
+*.sqlite-wal
