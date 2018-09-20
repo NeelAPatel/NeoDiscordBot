@@ -2,8 +2,8 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
     
     //External
 	var msgFormat = require('../modules/funcStatusMsg.js');
-    process.on('unhandledRejection', (e) => {
-        message.channel.send("MAJOR ERROR! Contact @Neel#2970 \n ```\n" + `${e.stack})` + "\n```")})
+    //process.on('unhandledRejection', (e) => { client.
+    //    message.channel.send("MAJOR ERROR! Contact @Neel#2970 \n ```\n" + `${e.stack})` + "\n```")})
     // if no arguments or length is less than 1 args
     if (!args || args.length < 1){
       return message.channel.send("Please use !neocmds help to know exactly how to use the subcommands.");
