@@ -70,6 +70,7 @@ exports.run = async(client, message, args, level) => {
 			else{
 				switch (args[0]){
 					case "setpath":
+					case "trace":
 					case "tracefolder":	{
 						//Gets the Path argument
 						userPath = args[1];
@@ -88,6 +89,7 @@ exports.run = async(client, message, args, level) => {
 							//Gets the array of paths from gasmDB
 							let arrPaths = client.gasmDB.getProp(guildKey, "arrPaths");
 							arrPaths = []; // resets the array to empty
+							
 							fs.readdir(userPath, function(err,files) { //readdir is asynchronous
 								if (err) { throw err; }
 								/* Fetches each from the given userPath 
@@ -101,12 +103,15 @@ exports.run = async(client, message, args, level) => {
 									console.log("%s (%s)", file, path.extname(file));
 								})    
 								
+								
 								// adds new array to gasmDB
 								client.gasmDB.setProp(guildKey,"arrPaths", arrPaths);
+								
 							});
 
+
 							//Wrapping up: Let user know the operation is complete + the path that was traced
-							
+								
 							let folderPath = client.gasmDB.getProp(guildKey, "folderPath");
 							msgFormat.status(message,"Success!","Folder trace complete!\n Traced Path: " + `${folderPath}`);
 						}
@@ -133,6 +138,53 @@ exports.run = async(client, message, args, level) => {
 					}
 					case "help":{
 						showHelp(message);
+						break;
+					}
+					case "refresh":{
+						let userPath = client.gasmDB.getProp(guildKey, "folderPath");
+
+						//Checks if the path is valid
+						if (userPath === undefined)
+							msgFormat.err(message, "ERROR!","Missing path argument");
+						else if (!fs.existsSync(userPath)) 
+							msgFormat.err(message, "ERROR!","Path does not exist.");
+						else{
+							//Path is valid!
+							
+							//Stores the path in gasmDB
+							client.gasmDB.setProp(guildKey, "folderPath", userPath);
+							
+							//Gets the array of paths from gasmDB
+							let arrPaths = client.gasmDB.getProp(guildKey, "arrPaths");
+							arrPaths = []; // resets the array to empty
+							fs.readdir(userPath, function(err,files) { //readdir is asynchronous
+								if (err) { throw err; }
+								/* Fetches each from the given userPath 
+								and adds its path to the array */
+								files.map(function(file){
+									return path.join(userPath, file);
+								}).filter(function (file){
+									return fs.statSync(file).isFile();
+								}).forEach(function(file){
+									arrPaths.push(file);
+									console.log("%s (%s)", file, path.extname(file));
+								})    
+								
+								// adds new array to gasmDB
+								client.gasmDB.setProp(guildKey,"arrPaths", arrPaths);
+							});
+							
+
+							//Wrapping up: Let user know the operation is complete + the path that was traced
+							msgFormat.status(message,"Success!","Folder refresh complete!");
+						}
+						break;
+					}
+					case "picCount":{
+						let arrPaths = client.gasmDB.getProp(guildKey, "arrPaths");
+						let folderPath = client.gasmDB.getProp(guildKey, "folderPath");
+						msgFormat.status(message,`Total Pictures in : "${folderPath}"`, `${arrPaths.length} pictures!`)
+						break;
 					}
 				}
 			}
@@ -160,7 +212,6 @@ async function createDB (client, Enmap, Provider){
 function addDefaultDB(client,guildKey){
 	client.gasmDB.set(guildKey, {
 		folderPath : "[Blank]",
-		//currNumPics : "cnp-",
 		arrPaths : []
 	});
 }
@@ -191,7 +242,17 @@ function showHelp(message){
           {
             "name": "help",
             "value": "Shows this message again"
-          }
+		  },
+		  {
+			"name": "refresh",
+			"value": "Uses last known path to reload images. Any changes made to the folder will reflect in the bot."
+		  },
+		  {
+			"name": "picCount",
+			"value": "Counts the number of pictures available for !gasm."
+		  }
+
+
         ]
       };
 
