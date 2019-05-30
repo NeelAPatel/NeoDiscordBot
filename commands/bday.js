@@ -43,7 +43,7 @@ exports.run = async(client, message, args, level) => {
 }
 
 function addDefaultDB(client,guildKey){
-	client.gasmDB.set(guildKey, {
+	client.bdayDB.set(guildKey, {
 		folderPath : "[Blank]",
 		arrPaths : []
 	});
