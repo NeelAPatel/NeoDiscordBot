@@ -10,7 +10,7 @@ const readdir = promisify(require("fs").readdir);
 const Enmap = require("enmap"); //npm i enmap
 const EnmapLevel = require("enmap-level"); //npm i enmap-level
 const Provider = require ("enmap-sqlite");
-
+var path = require('path');
 //CLIENT - The bot. 
 const client = new Discord.Client();
 
@@ -35,19 +35,89 @@ client.settings = new Enmap({provider: new EnmapLevel({name: "settings"})});
 client.cmdDB = new Enmap({ provider: new Provider({	name: "cmdDB"	})}); // persists data through reboots
 client.moduleCmds = require("./modules/customCmds.json");
 
+// directory walk function
+
+
+
+
 
 const init = async () => {
 	// Here we load **commands** into memory, as a collection, so they're accessible
 	// here and everywhere else.
-	const cmdFiles = await readdir("./commands/"); //collection of command Files
-	client.logger.log(`Loading a total of ${cmdFiles.length} commands.`); 
-	cmdFiles.forEach(f => {
-		if (!f.endsWith(".js")) 
-			return;
-		const response = client.loadCommand(f); //loads the command and if a response is produced, print it out
-		if (response) 
-			console.log(response);
-	});
+	// const cmdFiles = await readdir("./commands/"); //collection of command Files
+	// client.logger.log(`Loading a total of ${cmdFiles.length} commands.`); 
+	// cmdFiles.forEach(f => {
+	// 	if (!f.endsWith(".js")) 
+	// 		return;
+	// 	console.log('>>>' + f);
+	// 	const response = client.loadCommand(f); //loads the command and if a response is produced, print it out
+	// 	if (response) 
+	// 		console.log(response);
+	// });
+
+
+
+	var walk = function(dir, done) {
+		var results = [];
+		fs.readdir(dir, function(err, list) {
+			if (err) 
+				return done(err);
+			var pending = list.length;
+			if (!pending) 
+				return done(null, results);
+			list.forEach(function(file) {
+				
+				file = path.resolve(dir, file);
+				fs.stat(file, function(err, stat) {
+					if (stat && stat.isDirectory()) {
+						walk(file, function(err, res) {
+							results = results.concat(res);
+							if (!--pending) done(null, results);
+						});
+					} else {
+						results.push(file);
+						if (!--pending) 
+							done(null, results);
+					}
+				});
+			});
+		});
+	};
+
+	// const cmdFiles = await readdir("./commands/"); //collection of command Files
+	// client.logger.log(`Loading a total of ${cmdFiles.length} commands.`); 
+	// cmdFiles.forEach(f => {
+	// 	if (!f.endsWith(".js")) 
+	// 		return;
+	// 	const response = client.loadCommand(f); //loads the command and if a response is produced, print it out
+	// 	if (response) 
+	// 		console.log(response);
+	// });
+
+	walk("./commands/", function(err, results) {
+		if (err) throw err;
+		//console.log(results);
+		//console.log(require('path').dirname(require.main.filename))
+		results.forEach(f => {
+			//console.log(f);
+			currDir = require('path').dirname(require.main.filename);
+			f = f.replace(currDir  + '/commands/', '');
+			//console.log('[NEW] ' +  f);
+			if (!f.endsWith(".js")) 
+				return;
+
+			//console.log(f);
+			const response = client.loadCommand(f); //loads the command and if a response is produced, print it out
+			if (response) 
+				console.log(response);
+		});
+	  });
+	  
+
+	
+
+
+
 
 	// Then we load events, which will include our message and ready event.
 	const evtFiles = await readdir("./events/"); //collection of event files
