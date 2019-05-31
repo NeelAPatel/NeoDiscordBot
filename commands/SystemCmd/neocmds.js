@@ -36,6 +36,13 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
                 msgFormat.status(message,"Success!", `The command \`${args[1]}\` has been reloaded`);
                 break;
             }
+            case "unload": {
+                response = await client.unloadCommand(args[1]);
+                if (response) 
+                    return msgFormat.err(message,"Error!", `Error unloading: ${response}`);
+                msgFormat.err(message,"Success!", `The command \`${args[1]}\` has been UNLOADED`);
+                break;
+            }
 
 
             //Enable/Disable commands for currentServer

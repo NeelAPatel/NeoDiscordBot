@@ -135,11 +135,11 @@ module.exports = (client) => {
 					//console.log(f);
 					f = f.replace(currDir  + '/commands/', '');
 
-					console.log("[" + commandName + "'.js'] [" + f + "]");
+					//console.log("[" + commandName + "'.js'] [" + f + "]");
 					if (!f.endsWith(commandName)) 
 						return;
 					
-					console.log("PASSED");
+					//console.log("PASSED");
 
 					//console.log("../commands/" + f);    
 					//console.log(commandName)
@@ -147,7 +147,7 @@ module.exports = (client) => {
 
 					var thisCommand = "../commands/" + f
 					//console.log(commandName)
-					console.log(thisCommand);
+					//console.log(thisCommand);
 					const props = require(thisCommand);
 					client.logger.log(`Loading Command: ${props.help.name}. 👌`);
 					if (props.init) {
@@ -172,10 +172,11 @@ module.exports = (client) => {
 	};
 
 	client.unloadCommand = async (commandName) => {
-
+		console.log(">>> Recieved command to UNLOAD: " + commandName);
 		// looks for a commandName without js.
 		if (commandName.endsWith(".js")) 
 				commandName = commandName.replace('.js','')
+
 
 		let command;
 		//console.log(client.commands);
@@ -191,8 +192,35 @@ module.exports = (client) => {
 		if (command.shutdown) {
 			await command.shutdown(client);
 		}
-		delete require.cache[require.resolve(`../commands/${commandName}.js`)];
-		return false;
+
+		// find "${commandName}.js" file
+		// best solution: find file, only keep after commands/
+		var newPath = ".."
+		walk("./commands/", function(err, results) {
+			if (err) throw err;
+			//console.log(results);
+			//console.log(require('path').dirname(require.main.filename))
+			results.forEach(f => {
+				//console.log(f);
+				currDir = require('path').dirname(require.main.filename);
+				f = f.replace(currDir, '');
+				
+				if (!f.endsWith(commandName + ".js")) 
+					return;
+				console.log("command to delete " + commandName + "'.js'")
+				console.log(f);
+				
+				//console.log("Attempting to load: " + f);
+				//Action
+				newPath = ".." + f;
+				delete require.cache[require.resolve(newPath)];
+				return;
+				//return false;
+			});
+		});
+		console.log("outof loop " + newPath);
+		//delete require.cache[require.resolve(newPath)];
+		return false;	
 	};
 	/*
 	client.loadCommand = (commandName) => {

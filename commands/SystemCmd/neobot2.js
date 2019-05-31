@@ -45,44 +45,11 @@ exports.run = async (client, message, args, level) => {
         let response = null;
         switch(args[0]){
             case "load":{
-
+                loadCmd(args, client, message);
                 break;
             }
             case "reload":{
-                // find ping path => unload command
-                walk("./commands/", function(err, results) {
-                    if (err) throw err;
-                    //console.log(results);
-                    //console.log(require('path').dirname(require.main.filename))
-                    results.forEach(f => {
-                        //console.log(f);
-                        currDir = require('path').dirname(require.main.filename);
-                        f = f.replace(currDir  + '/commands/', '');
-                        //console.log('[NEW] ' +  f);
-                        if (!f.endsWith(".js")) 
-                            return;
-            
-                        console.log(f);
-                        
-                        //console.log("Attempting to load: " + f);
-                        // const response = client.loadCommand(f); //loads the command and if a response is produced, print it out
-                        
-                        // if (response) 
-                        //     console.log(response);
-                    });
-                  });
-
-
-
-                response = await client.unloadCommand(args[1]);
-                if (response) 
-                    return msgFormat.err(message,"Error!", `Error unloading: ${response}`);
-            
-                response = client.loadCommand(args[1]);
-                if (response)  
-                    return msgFormat.err(message,"Error!", `Error Loading: ${response}`);
-            
-                msgFormat.status(message,"Success!", `The command \`${args[1]}\` has been reloaded`);
+                reloadCmd(args, client, message);
                 break;
             }
             case "enable":{
@@ -106,7 +73,28 @@ exports.run = async (client, message, args, level) => {
     }
 }
 
+async function loadCmd(args, client, message){
+    var msgFormat = require('../../modules/funcStatusMsg.js');
+    let response = null;
+    response = await client.loadCommand(args[1]);
+    if (response)  
+        return msgFormat.err(message,"Error!", `Error Loading: ${response}`);
 
+    msgFormat.status(message,"Success!", `The command \`${args[1]}\` has been loaded`);
+}
+async function reloadCmd(args, client, message){
+    var msgFormat = require('../../modules/funcStatusMsg.js');
+    let response = null;
+    response = await client.unloadCommand(args[1]);
+    if (response) 
+        return msgFormat.err(message,"Error!", `Error unloading: ${response}`);
+
+    response = client.loadCommand(args[1]);
+    if (response)  
+        return msgFormat.err(message,"Error!", `Error Loading: ${response}`);
+
+    msgFormat.status(message,"Success!", `The command \`${args[1]}\` has been reloaded`);
+}
 function dispStats(client, message){
     const { version } = require("discord.js");
     const moment = require("moment");

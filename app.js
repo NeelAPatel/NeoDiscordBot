@@ -108,13 +108,16 @@ const init = async () => {
 
 			//console.log(f);
 			
+
+			// Only attempts to load .js files
+			// send f without.js ending? 
 			//console.log("Attempting to load: " + f);
 			const response = client.loadCommand(f); //loads the command and if a response is produced, print it out
 			
 			if (response) 
 				console.log(response);
 		});
-	  });
+	});
 	  
 
 	
