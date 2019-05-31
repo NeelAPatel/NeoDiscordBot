@@ -214,7 +214,7 @@ module.exports = (client) => {
 				//Action
 				newPath = ".." + f;
 				delete require.cache[require.resolve(newPath)];
-				return;
+				return false;
 				//return false;
 			});
 		});
