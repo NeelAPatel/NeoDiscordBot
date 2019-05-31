@@ -137,10 +137,12 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
             }
             case "listModules":{
                 message.channel.send(`The following modules are available for use: ${client.moduleCmds.arrModuleCommands} `)
+                break;
             }
             case "help":{
                 //give detailed embeded help description
                 showHelp(message);
+                break;
             }
            
         }
