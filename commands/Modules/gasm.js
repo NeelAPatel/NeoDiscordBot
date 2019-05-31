@@ -1,7 +1,7 @@
 exports.run = async(client, message, args, level) => {
 
 	//External
-	var msgFormat = require('../modules/funcStatusMsg.js');
+	var msgFormat = require('../../modules/funcStatusMsg.js');
 
     // Key = numeric identifier of the current guild
     const guildKey = `g-${message.guild.id}`;

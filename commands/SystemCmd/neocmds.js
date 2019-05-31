@@ -1,7 +1,7 @@
 exports.run = async (client, message, args, level) => {// eslint-disable-line no-unused-vars
     
     //External
-	var msgFormat = require('../modules/funcStatusMsg.js');
+	var msgFormat = require('../../modules/funcStatusMsg.js');
     //process.on('unhandledRejection', (e) => { client.
     //    message.channel.send("MAJOR ERROR! Contact @Neel#2970 \n ```\n" + `${e.stack})` + "\n```")})
     // if no arguments or length is less than 1 args
@@ -83,7 +83,7 @@ exports.run = async (client, message, args, level) => {// eslint-disable-line no
                     // message.channel.send(`${cmdToDisable} has been disabled`);
 
                     } else {
-                        msgFormat.status (message, " :) ", "This command is already enabled for this server.")
+                        msgFormat.status (message, " :) ", "This command is already disabled for this server.")
                     }
                 }
                 break;

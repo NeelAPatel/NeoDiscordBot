@@ -1,6 +1,6 @@
 exports.run = async(client, message, args, level) => {
     //External
-    var msgFormat = require('../modules/funcStatusMsg.js');
+    var msgFormat = require('../../modules/funcStatusMsg.js');
     const guildKey = `g-${message.guild.id}`;
 
     if (!(client.cmdDB.has(guildKey))){
@@ -16,7 +16,7 @@ exports.run = async(client, message, args, level) => {
             //For Error messages
             process.on('unhandledRejection', (e) => {
                 console.log(e.stack)
-                var msgFormat = require('../modules/funcStatusMsg.js')
+                var msgFormat = require('../../modules/funcStatusMsg.js')
                 msgFormat.err(message,"Error!", e.stack)});
 
             //Libraries
@@ -44,11 +44,6 @@ exports.run = async(client, message, args, level) => {
             // Part 2 : Commands ==============
             if (!args[0])
                 noargsCmd(client, message,thisUserDetails);
-            else{
-                switch (args[0]){
-                    case "add"
-                }
-            }
         }
     }
 

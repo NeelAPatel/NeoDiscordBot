@@ -1,6 +1,6 @@
 exports.run = async (client, message, args, level) => {
     	//TESTING
-    var msgFormat = require('../modules/funcStatusMsg.js');
+    var msgFormat = require('../../modules/funcStatusMsg.js');
     
     msgFormat.err(message, "errTitle","errMsg");
     msgFormat.status(message, "title","mainMsg");

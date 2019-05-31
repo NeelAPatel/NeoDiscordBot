@@ -13,6 +13,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   msg.edit(`Pong! Latency is ${msg.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
   //client.moduleCmds = require("../modules/customCmds.json");
   //message.channel.send(`${client.moduleCmds.arrModuleCommands}`);
+  message.channel.send("WEEWOO")
 };
 
 exports.conf = {

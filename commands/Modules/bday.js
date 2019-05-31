@@ -1,6 +1,6 @@
 exports.run = async(client, message, args, level) => {
     //External
-    var msgFormat = require('../modules/funcStatusMsg.js');
+    var msgFormat = require('../../modules/funcStatusMsg.js');
     const guildKey = `g-${message.guild.id}`;
 
     if (!(client.cmdDB.has(guildKey))) // if cmdDB does not have the key

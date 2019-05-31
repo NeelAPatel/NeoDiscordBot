@@ -73,9 +73,7 @@ async function createDB (client, Enmap, Provider){
 
 function addDefaultDB(client,guildKey){
 	client.tagDB.set(guildKey, {
-		arrTags: [{
-			tagName: 
-		}]
+		arrTags: "",
 		tagContent: ""
 	});
 }

@@ -1,10 +1,10 @@
 exports.run = async (client, message, args, level) => {
     //TESTING
     
-    var msgFormat = require('../modules/funcStatusMsg.js');
+    var msgFormat = require('../../modules/funcStatusMsg.js');
     process.on('unhandledRejection', (e) => { 
         //console.log(e.stack)} 
-        var msgFormat = require('../modules/funcStatusMsg.js')
+        var msgFormat = require('../../modules/funcStatusMsg.js')
         msgFormat.err(message,"Error!", e.stack)
     });
 

@@ -107,7 +107,10 @@ const init = async () => {
 				return;
 
 			//console.log(f);
+			
+			//console.log("Attempting to load: " + f);
 			const response = client.loadCommand(f); //loads the command and if a response is produced, print it out
+			
 			if (response) 
 				console.log(response);
 		});
