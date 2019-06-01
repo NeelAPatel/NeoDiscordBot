@@ -2,7 +2,7 @@ exports.run = async (client, message, args, level) => {
     //External
     const fs = require("fs"); 
     var path = require('path');
-    var msgFormat = require('../../modules/funcStatusMsg.js');
+    
     
     //For Error messages
     process.on('unhandledRejection', (e) => {
@@ -15,35 +15,34 @@ exports.run = async (client, message, args, level) => {
     if (!args[0]){
         //no args
         // show possible sub commands
+        showHelp(message);
     }
     else{
         switch(args[0]){
             case "load":{ // Works
-                loadCmd(args, client, message, msgFormat);
+                loadCmd(args, client, message);
                 break;
             }
             case "reload":{ // Works
-                reloadCmd(args, client, message, msgFormat);
+                reloadCmd(args, client, message);
                 break;
             }
             case "setupModuleDB":{
                 setupModuleDB(client, message);
                 break;
             }
-            
             case "modules":{ // works
                 modulesSummary(client, message);
                 break;
             }
             case "enable":{
-                enableModule(client, message, msgFormat);
+                enableModule(args, client, message);
                 break;
             }
             case "disable":{
-                disableModule(client, message, msgFormat);
+                disableModule(args,client, message);
                 break;
             }
-            
             case "stats":{ // Works
                 dispStats(client,message);
                 break;
@@ -86,6 +85,7 @@ function setupModuleDB(client, message){
         message.channel.send("Server `"+ message.guild.name +"` already exists in the ModulesManagement Database.\nPlease run `!neocmds listmodules` to view available modules.");
     }
 }
+
 function modulesSummary(client, message){
     //const Enmap = require("enmap"); //npm i enmap
     const EnmapLevel = require("enmap-level"); //npm i enmap-level
@@ -109,7 +109,8 @@ function modulesSummary(client, message){
     
 }
 
-function enableModule(client, message, msgFormat){
+function enableModule(args, client, message){
+    var msgFormat = require('../../modules/funcStatusMsg.js');
     let cmdToEnable = args[1];
     const guildKey = `g-${message.guild.id}`;
 
@@ -129,8 +130,11 @@ function enableModule(client, message, msgFormat){
             msgFormat.status(message, "Success!", `${cmdToEnable} module has been enabled for this server.`)
         }
     }
+
 }
-function disableModule(client, message, msgFormat){
+
+function disableModule(args, client, message){
+    var msgFormat = require('../../modules/funcStatusMsg.js');
     let cmdToDisable = args[1];
     const guildKey = `g-${message.guild.id}`;        
 
@@ -156,7 +160,9 @@ function disableModule(client, message, msgFormat){
         }
     }
 }
+
 async function loadCmd(args, client, message, msgFormat){
+    var msgFormat = require('../../modules/funcStatusMsg.js');
     if (!args[1].endsWith(".js")) 
 		args[1] = args[1] + ".js";
     
@@ -169,7 +175,7 @@ async function loadCmd(args, client, message, msgFormat){
 }
 
 async function reloadCmd(args, client, message, msgFormat){
-    //var msgFormat = require('../../modules/funcStatusMsg.js');
+    var msgFormat = require('../../modules/funcStatusMsg.js');
     let response = null;
     
     if (!args[1].endsWith(".js")) 

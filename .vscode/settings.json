@@ -1,6 +1,11 @@
 {
     "sqltools.connections": [
         {
+            "database": ".\\userinfoX.sqlite",
+            "dialect": "SQLite",
+            "name": "userinfoX"
+        },
+        {
             "database": ".\\userinfo.sqlite",
             "dialect": "SQLite",
             "name": "userinfo"
