@@ -33,24 +33,15 @@ exports.run = async(client, message, args, level) => {
             checkTBLUIntroExists()
             prepCommands(client, message, sql)  
                         
-            let thisUserDetails = client.getUser.get(message.author.id);
-            if (!thisUserDetails){ // if this user doesn't exist, create one in memory, just in case.
-                thisUserDetails = {
-                    id: `${message.guild.id}-${message.author.id}`,
-                    userID: message.author.id,
-                    userDisplay: message.member.displayName,
-                    bdayMonth: `None`,
-                    bdayDate: `-1`
-                  }
-            }
+            
 
             // Part 2 : Commands ==============
             if (!args[0])
-                showFullProfile(client, message, thisUserDetails);
+                showFullProfile(client, message);
             else{
                 switch(args[0]){
                     case "setbday":{
-                        setBday(args, client, message, thisUserDetails);
+                        setBday(args, client, message);
                         break;
                     }
                     case "setintro":{
@@ -83,7 +74,7 @@ function checkTBLUInfoExists(message, sql){
     
     if (!tblUInfo['count(*)']){
         // If the table isn't there, create it and setup the database correctly.
-        sql.prepare("CREATE TABLE userInfo (id TEXT PRIMARY KEY, userID INTEGER, userDisplay TEXT, bdayMonth TEXT, bdayDate INTEGER);").run();
+        sql.prepare("CREATE TABLE userInfo (id TEXT PRIMARY KEY, userID INTEGER, userDisplay TEXT, bdayMonth INTEGER, bdayDate INTEGER, bdayYear INTEGER);").run();
         // Ensure that the "id" row is always unique and indexed.
         sql.prepare("CREATE UNIQUE INDEX idx_userInfo_id ON userInfo (id);").run();
         sql.pragma("synchronous = 1");
@@ -99,17 +90,33 @@ function checkTBLUIntroExists(){
 function prepCommands(client, message, sql){
     // And then we have two prepared statements to get and set the score data.
     client.getUser = sql.prepare("SELECT * FROM userInfo WHERE userID = ?");
-    client.addUser = sql.prepare("INSERT OR REPLACE INTO userInfo (id, userID, userDisplay, bdayMonth, bdayDate) VALUES (@id, @userID, @userDisplay, @bdayMonth, @bdayDate);");
+    client.addUser = sql.prepare("INSERT OR REPLACE INTO userInfo (id, userID, userDisplay, bdayMonth, bdayDate, bdayYear) VALUES (@id, @userID, @userDisplay, @bdayMonth, @bdayDate, @bdayYear);");
     //message.channel.send("Command ALL runned.");
 }
 
-async function showFullProfile(client, message, thisUserDetails){
-    //client.addUser.run(thisUserDetails);
+function getUserDetails(client, message){
+    var thisUserDetails = client.getUser.get(message.author.id);
+    if (!thisUserDetails){ // if this user doesn't exist, create one in memory, just in case.
+        thisUserDetails = {
+            id: `${message.guild.id}-${message.author.id}`,
+            userID: message.author.id,
+            userDisplay: message.member.displayName,
+            bdayMonth: `-1`,
+            bdayDate: `-1`,
+            bdayYear: '-1111'
+            }
+    }
+    return thisUserDetails;
+}
 
+async function showFullProfile(client, message){
+    //client.addUser.run(thisUserDetails);
+    var thisUserDetails = getUserDetails(client, message);
 
     message.channel.send(thisUserDetails.userDisplay);
-    message.channel.send(thisUserDetails.bdayMonth);
-    message.channel.send(thisUserDetails.bdayDate);
+    message.channel.send(`${thisUserDetails.bdayMonth} ${thisUserDetails.bdayDate} ${thisUserDetails.bdayYear}`);
+    
+    //message.channel.send(thisUserDetails);
     client.addUser.run(thisUserDetails);
 
    // let currArrCmds = client.cmdDB.getProp(guildKey, "commands");
@@ -118,39 +125,38 @@ async function showFullProfile(client, message, thisUserDetails){
     //message.channel.send("cmdComplete");
 }
 
-function setBday(args, client, message, thisUserDetails){
+function setBday(args, client, message){
     
-    if (!args[1] || !args[2]){
-        message.channel.send("Missing arguments")
+    var moment = require('moment');
+
+    if (!args[1]){
+        message.channel.send("Error: Missing Date value. Use format YYYY-MM-DD")
         return;
     }
-    var userMonth = args[1].toLowerCase()
-    var userDate = args[2]
-    var usableMonths = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
-    var months31 = ["jan", "mar",  "may",  "jul", "aug",  "oct",  "dec"]
-    var months30 = [ "feb", "apr", "jun", "sep", "nov"]
-    
-    if (!usableMonths.includes(userMonth)){
-        message.channel.send(`Error: Wrong month argument. \n Use one of the following as the month value: [${usableMonths}]` )
-        return;
-    }
-    if (!(parseInt(userDate) >= 1 && parseInt(userDate) < 32))
-    {
-        message.channel.send("Error: date value out of range")
-        return;
+    else{
+        var givenDate = moment(args[1],'MM-DD-YYYY', true);
+        if (!(givenDate.isValid())){
+            message.channel.send("Error: Invalid date. Use format YYYY-MM-DD\n Note: For now, Year does not matter.")
+            return;
+        }
     }
 
-    var condFeb = ((userMonth == usableMonths[1]) && (!(parseInt(userDate) >= 1 && parseInt(userDate) < 30)))
-    var cond31 = (months31.includes(userMonth) && (!(parseInt(userDate) >= 1 && parseInt(userDate) < 32))) // if month is 31, but date is not in range
-    var cond30 = (months30.includes(userMonth) && (!(parseInt(userDate) >= 1 && parseInt(userDate) < 31))) // if month is 31, but date is not in range
+    // add to database
+    message.channel.send("SUCCESS!!!")
+    var givenDate = moment(args[1],'MM-DD-YYYY', true);
+    var myDate = new Date();
+
+    myDate.setMonth 
+    var thisUserDetails = getUserDetails(client, message);
+    thisUserDetails.bdayMonth = parseInt(givenDate.format('MM'),10);
+    thisUserDetails.bdayDate = parseInt(givenDate.format('DD'), 10);
+    thisUserDetails.bdayYear = parseInt(givenDate.format('YYYY'),10);
+   
+    message.channel.send(`${thisUserDetails.bdayMonth} ${thisUserDetails.bdayDate} ${thisUserDetails.bdayYear}`);
+    client.addUser.run(thisUserDetails);
     
-
-    if (condFeb || cond30 || cond31){
-        message.channel.send("Error: date value out of range for " + userMonth)
-        return;
-    }
-
-    message.channel.send("Success! " + userMonth + userDate)
+    
+    
     
 }
 
