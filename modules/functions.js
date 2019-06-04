@@ -122,7 +122,7 @@ module.exports = (client) => {
 
 
 	client.loadCommand = (commandName) => {
-		console.log(">>> Recieved command to load: " + commandName);
+		//console.log(">>> Recieved command to load: " + commandName);
 		//console.log(require('path').dirname(require.main.filename))
 		try {
 			walk("./commands/", function(err, results) {
@@ -172,7 +172,7 @@ module.exports = (client) => {
 	};
 
 	client.unloadCommand = async (commandName) => {
-		console.log(">>> Recieved command to UNLOAD: " + commandName);
+		//console.log(">>> Recieved command to UNLOAD: " + commandName);
 		// looks for a commandName without js.
 		if (commandName.endsWith(".js")) 
 				commandName = commandName.replace('.js','')
@@ -207,8 +207,8 @@ module.exports = (client) => {
 				
 				if (!f.endsWith(commandName + ".js")) 
 					return;
-				console.log("command to delete " + commandName + "'.js'")
-				console.log(f);
+				//console.log("command to delete " + commandName + "'.js'")
+				//console.log(f);
 				
 				//console.log("Attempting to load: " + f);
 				//Action
@@ -218,7 +218,7 @@ module.exports = (client) => {
 				//return false;
 			});
 		});
-		console.log("outof loop " + newPath);
+		//console.log("outof loop " + newPath);
 		//delete require.cache[require.resolve(newPath)];
 		return false;	
 	};
